@@ -1,0 +1,60 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: learn-fullstack-backend
+
+  # ---- PostgreSQL ----
+  datasource:
+    url: jdbc:postgresql://localhost:5432/demo
+    username: demo
+    password: demo123
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      # 启动时按实体自动建表/更新表结构（学习环境方便；生产请用 Flyway 管理 DDL）
+      ddl-auto: update
+    open-in-view: false
+    properties:
+      hibernate:
+        format_sql: true
+    show-sql: false
+
+  # ---- Redis ----
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      timeout: 3s
+
+  # ---- Kafka ----
+  kafka:
+    bootstrap-servers: localhost:9092
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      acks: all   # 等待所有副本确认，保证消息不丢
+    consumer:
+      group-id: demo-group
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json.trusted.packages: com.example.demo
+        spring.json.value.default.type: com.example.demo.entity.Message
+
+# ---- Actuator：可观测性入门 ----
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+  endpoint:
+    health:
+      show-details: always
+
+logging:
+  level:
+    com.example.demo: INFO

@@ -1,0 +1,45 @@
+# CI 持续集成：每次 push / PR 自动跑测试与构建
+# 体验方式：把项目推到 GitHub 后，在 Actions 页面即可看到流水线
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  backend:
+    name: 后端测试与打包
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: 安装 JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+          cache: maven
+
+      - name: 运行单元测试
+        working-directory: backend
+        run: mvn test -B
+
+  frontend:
+    name: 前端构建
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: 安装 Node 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: 安装依赖
+        working-directory: frontend
+        run: npm install
+
+      - name: 构建
+        working-directory: frontend
+        run: npm run build

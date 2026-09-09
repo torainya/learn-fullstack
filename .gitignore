@@ -1,0 +1,13 @@
+# 构建产物
+backend/target/
+frontend/dist/
+frontend/node_modules/
+
+# IDE
+.idea/
+*.iml
+.vscode/
+
+# 日志与本地环境
+*.log
+.env
