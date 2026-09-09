@@ -31,7 +31,10 @@ async function submit() {
     content.value = ''
     await refresh()
   } catch (e) {
-    error.value = e.response?.data?.message || '提交失败'
+    // 带上状态码方便排查：HTTP 500 = 后端内部错误，HTTP 400 = 参数校验失败，无响应 = 网络不通
+    error.value = e.response
+      ? `提交失败（HTTP ${e.response.status}）`
+      : '网络错误：无法连接后端'
   } finally {
     sending.value = false
   }
