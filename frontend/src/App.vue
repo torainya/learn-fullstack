@@ -16,9 +16,11 @@ async function refresh() {
     const [msgRes, statRes] = await Promise.all([fetchMessages(), fetchStats()])
     messages.value = msgRes.data
     consumed.value = statRes.data.consumed
-    error.value = ''
+    // 注意：这里不能清空 error——轮询每 2 秒执行一次，
+    // 如果在这里清空，提交报错会"闪一下就消失"，用户根本看不清
   } catch (e) {
-    error.value = '无法连接后端，请确认服务已启动'
+    // 仅当轮询本身也失败时才提示网络问题（不打断已有错误信息）
+    if (!error.value) error.value = '无法连接后端，请确认服务已启动'
   }
 }
 
@@ -26,6 +28,7 @@ async function refresh() {
 async function submit() {
   if (!content.value.trim() || sending.value) return
   sending.value = true
+  error.value = ''
   try {
     await createMessage(content.value.trim())
     content.value = ''
