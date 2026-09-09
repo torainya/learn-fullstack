@@ -13,7 +13,8 @@ services:
       POSTGRES_USER: demo
       POSTGRES_PASSWORD: demo123
     ports:
-      - "5432:5432"
+      # 宿主机 15432（服务器 5432 已被其他项目占用）；容器内部仍是 5432
+      - "15432:5432"
     volumes:
       - pg_data:/var/lib/postgresql/data
     healthcheck:
@@ -68,7 +69,8 @@ services:
       SPRING_DATA_REDIS_HOST: redis
       SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
     ports:
-      - "8080:8080"
+      # 宿主机 18080（服务器 8080 已被其他项目占用）；nginx 容器内部仍代理 backend:8080
+      - "18080:8080"
     depends_on:
       postgres:
         condition: service_healthy
@@ -82,7 +84,8 @@ services:
     build: ./frontend
     container_name: demo-frontend
     ports:
-      - "80:80"
+      # 宿主机 8082（服务器 80 已被 1Panel openresty 占用）
+      - "8082:80"
     depends_on:
       - backend
 
