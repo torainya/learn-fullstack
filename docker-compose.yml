@@ -31,8 +31,9 @@ services:
       - redis_data:/data
 
   # Kafka 单机 KRaft 模式（新版已不需要 Zookeeper）
+  # 注：国内网络下 bitnami 这类第三方镜像用加速源前缀直接拉取更稳
   kafka:
-    image: bitnami/kafka:3.7
+    image: docker.m.daocloud.io/bitnami/kafka:3.7
     container_name: demo-kafka
     ports:
       - "9092:9092"
